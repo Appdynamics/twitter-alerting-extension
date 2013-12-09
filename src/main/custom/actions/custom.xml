@@ -1,0 +1,6 @@
+<custom-actions>
+	<action>
+		<type>update-twitter-status</type>
+		<executable>update-twitter-status.sh</executable>
+	</action>
+</custom-actions>
