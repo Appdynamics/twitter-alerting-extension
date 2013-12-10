@@ -7,6 +7,9 @@ import twitter4j.auth.RequestToken;
 
 import java.io.*;
 
+/**
+ * Request and stores Twitter OAuth access token and post AppDynamics event notification as tweets
+ */
 public class TwitterAlert {
     private static Logger logger = Logger.getLogger(TwitterAlert.class);
 
@@ -35,7 +38,7 @@ public class TwitterAlert {
 
             @Override
             public void onRateLimitReached(RateLimitStatusEvent rateLimitStatusEvent) {
-                //never called
+                //never called by API
             }
         });
 
@@ -69,6 +72,12 @@ public class TwitterAlert {
         }
     }
 
+    /**
+     * Remove quotes from arguments, categorize, and assign arguments to their respective fields
+     *
+     * @param args
+     * @throws Exception
+     */
     private static void parseEventParams(String[] args) throws Exception{
         args = stripQuotes(args);
 
@@ -99,6 +108,11 @@ public class TwitterAlert {
         }
     }
 
+    /**
+     * Generate request URL and prompt user to grant access for this app. Then stores the access token on disk
+     *
+     * @throws TwitterException
+     */
     private static void getAuthorization() throws TwitterException {
         RequestToken requestToken = twitter.getOAuthRequestToken();
 
@@ -127,16 +141,31 @@ public class TwitterAlert {
 
     }
 
+    /**
+     * Store the access token on disk
+     *
+     * @param token
+     */
     private static void storeAccessToken(AccessToken token) {
         storeObject(token, TOKEN_FILE, "access token");
     }
 
+    /**
+     * Read access token from disk
+     *
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private static AccessToken readAccessToken() throws IOException, ClassNotFoundException {
         FileInputStream fis = new FileInputStream(TOKEN_FILE);
         ObjectInputStream ois = new ObjectInputStream(fis);
         return (AccessToken) ois.readObject();
     }
 
+    /**
+     * Check for rate limit and protected status. Post status if permitted, log status otherwise
+     */
     private static void postUpdate(){
         try {
             if (!isLimitReached()){
@@ -147,6 +176,7 @@ public class TwitterAlert {
                     logger.error("User @" + user.getScreenName() + " status is not protected, aborting status update");
                 }
             } else {
+                logger.warn("Twitter rate limit reached, status update ignored until next reset");
                 logger.info("Ignored tweet: " + createStatus(false));
             }
         } catch (TwitterException e) {
@@ -158,6 +188,13 @@ public class TwitterAlert {
         }
     }
 
+    /**
+     * Generate <=140 character Twitter status (URL treated as shortened)
+     *
+     * @param doAPICall     fetch short URL length from Twitter if true, use preset length if false
+     * @return  Twitter status
+     * @throws TwitterException
+     */
     private static String createStatus(boolean doAPICall) throws TwitterException {
         int urlLength = 22;     //shortened URL length for http
         if (doAPICall) {
@@ -208,10 +245,22 @@ public class TwitterAlert {
         return status;
     }
 
+    /**
+     * Store rate limit status on disk
+     *
+     * @param status
+     */
     private static void storeRateLimitStatus(RateLimitStatus status){
         storeObject(status, RATE_LIMIT_STATUS_FILE, "rate limit status");
     }
 
+    /**
+     * Store object <code>obj</code> to <code>filePath</code> on disk, using description <code>desc</code>
+     *
+     * @param obj       a serializable object
+     * @param filePath  file path
+     * @param desc      object description for logging
+     */
     private static void storeObject(Object obj, String filePath, String desc){
         try {
             FileOutputStream fos = new FileOutputStream(filePath,false);
@@ -223,6 +272,12 @@ public class TwitterAlert {
             logger.error("Failed to " + desc);
         }
     }
+
+    /**
+     * Read rate limit status from disk
+     *
+     * @return
+     */
     private static RateLimitStatus readRateLimitStatus() {
         File statusFile = new File(RATE_LIMIT_STATUS_FILE);
         if (statusFile.exists()){
@@ -239,15 +294,25 @@ public class TwitterAlert {
         return null;
     }
 
+    /**
+     * Check if rate limit has been reached
+     *
+     * @return true if reached, false otherwise
+     */
     private static boolean isLimitReached() {
         RateLimitStatus status = readRateLimitStatus();
         if (status != null && status.getResetTimeInSeconds() > System.currentTimeMillis() / 1000) {
-            logger.warn("Twitter rate limit reached, status update ignored until next reset");
             return true;
         }
         return false;
     }
 
+    /**
+     * Remove surrounding quotes for all elements in <code>args</code>
+     *
+     * @param args
+     * @return
+     */
     private static String[] stripQuotes(String[] args) {
         String[] stripped = new String[args.length];
         for (int i=0;i<args.length;i++){
