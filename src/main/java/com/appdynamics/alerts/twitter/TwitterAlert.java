@@ -10,10 +10,8 @@ import java.io.*;
 public class TwitterAlert {
     private static Logger logger = Logger.getLogger(TwitterAlert.class);
 
-    //register your own application and get the key/secret here:
-    //https://dev.twitter.com/apps
-    private static final String CONSUMER_KEY = "";
-    private static final String CONSUMER_SECRET = "";
+    private static final String CONSUMER_KEY = System.getProperty("consumer.key");
+    private static final String CONSUMER_SECRET = System.getProperty("consumer.secret");
 
     private static final int STATUS_LENGTH = 140;
     private static final String TOKEN_FILE = "token";

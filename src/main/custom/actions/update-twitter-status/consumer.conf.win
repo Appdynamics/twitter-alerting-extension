@@ -1,0 +1,3 @@
+@echo off
+set CONSUMER_KEY=
+set CONSUMER_SECRET=

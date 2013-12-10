@@ -8,7 +8,28 @@
         <fileset dir="${lib.dir}" includes="**/*.jar"/>
     </path>
 
-    <target name="build">
+    <condition property="isWindows">
+        <os family="windows"/>
+    </condition>
+    
+    <target name="buildWindows" if="isWindows">
+        <copy tofile="${build.dir}/custom/actions/custom.xml" file="${custom.dir}/custom.xml.win"/>
+        <copy tofile="${build.dir}/custom/actions/update-twitter-status/consumer.conf" file="${custom.dir}/update-twitter-status/consumer.conf.win"/>
+        <copy todir="${build.dir}/custom/actions">
+            <fileset dir="${custom.dir}" includes="**/*.bat"/>
+        </copy>
+    </target>
+    
+    <target name="buildUnix" unless="isWindows">
+        <copy todir="${build.dir}/custom/actions">
+            <fileset dir="${custom.dir}" includes="**/*">
+                <exclude name="**/*.win"/>
+                <exclude name="**/*.bat"/>
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="build" depends="buildWindows, buildUnix">
         <mkdir dir="${build.dir}/classes"/>
         <javac destdir="${build.dir}/classes" source="1.5" target="1.5" srcdir="src/main/java" classpathref="cp" debug="on"/>
         <mkdir dir="${build.dir}/custom/logs"/>
@@ -19,9 +40,6 @@
                 <attribute name="Class-Path" value="./log4j-1.2.15.jar ./twitter4j-core-3.0.5.jar"/>
             </manifest>
         </jar>
-        <copy todir="${build.dir}/custom/actions">
-            <fileset dir="${custom.dir}" includes="**/*"/>
-        </copy>
         <copy todir="${build.dir}/custom/conf">
             <fileset dir="${conf.dir}" includes="*"/>
         </copy>

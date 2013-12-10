@@ -17,4 +17,5 @@
 # -------------------------------------------------------------
 # Shell script to send notification as Twitter status
 # -------------------------------------------------------------
-java -Dlog4j.configuration=file:../../conf/log4j.xml -jar ../../lib/TwitterAlert.jar "$@"
+. consumer.conf
+java -Dlog4j.configuration=file:../../conf/log4j.xml -Dconsumer.key=$CONSUMER_KEY -Dconsumer.secret=$CONSUMER_SECRET -jar ../../lib/TwitterAlert.jar "$@"
