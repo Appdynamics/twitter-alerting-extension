@@ -16,10 +16,10 @@ The Twitter alerting extension enables AppDynamics to post custom notifications 
 
 ### Steps
 
-1. Copy the consumer key and secret from your application detail page and paste them in custom/actions/update-twitter-status/consumer.conf.
-2. Run ```ant package``` from the twitter-alerting-extension directory.
-3. Deploy the file TwitterAlert.zip found in the 'dist' directory into the controller installation directory.
-4. Unzip the file. You will see a prompt if you already have a custom.xml in the <Controller-install-dir>/custom/actions/ directory, don't let the unzip process overwrite it. Instead, merge the contents.
+1. Run ```ant package``` from the twitter-alerting-extension directory.
+2. Deploy the file TwitterAlert.zip found in the 'dist' directory into the controller installation directory.
+3. Unzip the file. You will see a prompt if you already have a custom.xml in the <Controller-install-dir>/custom/actions/ directory, don't let the unzip process overwrite it. Instead, merge the contents.
+4. Copy the consumer key and secret from your Twitter application detail page and paste them in custom/actions/update-twitter-status/consumer.conf.
 5. cd into <Controller-install-dir>/custom/actions/authenticate-twitter-extension and run auth.sh (if the system is Windows, run auth.bat).
 6. Follow the URL shown in the command line and authorize the app.
 7. Enter the PIN shown on page in the command prompt.
