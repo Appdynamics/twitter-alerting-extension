@@ -3,7 +3,7 @@ twitter-alerting-extension
 
 ## Use Case
 
-The Twitter alerting extension enables AppDynamics to post custom notifications as tweets on Twitter. Twitter followers can see brief description of the health rule violation or event and get more detail on AppDynamics by following the URL provided in the tweet.
+The Twitter alerting extension enables AppDynamics to post custom notifications as tweets on Twitter. Twitter followers can see a brief description of the health rule violation or event and get more detail on AppDynamics by following the URL provided in the tweet.
 
 ## Installation
 
@@ -26,4 +26,18 @@ The Twitter alerting extension enables AppDynamics to post custom notifications 
 
 Now you are ready to use this extension as a custom action. In the AppDynamics UI, go to Alert & Respond -> Actions. Click Create Action. Select Custom Action and click OK. In the drop-down menu you can find the action called 'update-twitter-status'.
 
-**Note**: Twitter has a posting limit of 1000 tweets per day and about 15 tweets in a burst, any tweets that exceed this limit will be ignored. Therefore this extension should not be used for any frequently occurring events or notifications.
+**Note**: Twitter has a posting limit of 1000 tweets per day and about 15 tweets in a burst; any tweets that exceed this limit will be ignored. Therefore this extension should not be used for any frequently occurring events or notifications.
+
+##Contributing
+
+Always feel free to fork and contribute any changes directly here on GitHub.
+
+##Community
+
+Find out more in the [AppSphere](http://appsphere.appdynamics.com/t5/eXchange/Twitter-Alerting-Extension/idi-p/5571) community.
+
+##Support
+
+For any questions or feature request, please contact [AppDynamics Center of Excellence](mailto:ace-request@appdynamics.com).
+
+
