@@ -6,6 +6,10 @@ import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 
 /**
  * Request and stores Twitter OAuth access token and post AppDynamics event notification as tweets
@@ -19,6 +23,7 @@ public class TwitterAlert {
     private static final int STATUS_LENGTH = 140;
     private static final String TOKEN_FILE = "token";
     private static final String RATE_LIMIT_STATUS_FILE = "rate-limit";
+    private static final String SHORTENER_URL = "http://tinyurl.com/api-create.php?url=";
 
     private static Twitter twitter;
     private static Event event;
@@ -199,11 +204,7 @@ public class TwitterAlert {
         int urlLength = 22;     //shortened URL length for http
         if (doAPICall) {
             TwitterAPIConfiguration apiConfiguration = twitter.help().getAPIConfiguration();
-            if (event.deepLinkUrl.startsWith("https")) {
-                urlLength = apiConfiguration.getShortURLLengthHttps();
-            } else {
-                urlLength = apiConfiguration.getShortURLLength();
-            }
+            urlLength = apiConfiguration.getShortURLLength();
         }
 
         String status;
@@ -240,9 +241,23 @@ public class TwitterAlert {
                 status += msg;
             }
 
-            status += event.deepLinkUrl + ((OtherEvent) event).eventID;
+            status += getShortenedURL(event.deepLinkUrl + ((OtherEvent) event).eventID);
         }
         return status;
+    }
+
+    private static String getShortenedURL(String url) {
+        try {
+            URL shortenedURL = new URL(SHORTENER_URL+ URLEncoder.encode(url, "UTF-8"));
+            URLConnection connection = shortenedURL.openConnection();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            return reader.readLine();
+        } catch (MalformedURLException e) {
+            logger.error("Invalid URL: " + url);
+        } catch (IOException e) {
+            logger.error("Error reading URL shortener response");
+        }
+        return null;
     }
 
     /**
