@@ -240,7 +240,7 @@ public class TwitterAlert {
                 status += msg;
             }
 
-            status += event.deepLinkUrl + ((HealthRuleViolation) event).incidentID;
+            status += getShortenedURL(event.deepLinkUrl + ((HealthRuleViolation) event).incidentID);
         } else {
             status = "Event. ";
             status += "P" + event.priority + " ";
