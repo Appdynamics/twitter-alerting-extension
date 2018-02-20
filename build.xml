@@ -47,6 +47,9 @@
             <fileset dir="${lib.dir}/log4j" includes="*"/>
             <fileset dir="${lib.dir}/twitter4j" includes="*"/>
         </copy>
+        <copy todir="${build.dir}/custom/lib/">
+            <fileset dir="" includes="NOTICE.txt"/>
+        </copy>
         <delete dir="${build.dir}/classes"/>
     </target>
     
